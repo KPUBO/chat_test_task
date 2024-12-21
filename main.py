@@ -1,7 +1,9 @@
+import logging
 from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI
+from fastapi.responses import ORJSONResponse
 
 from api import router
 from core.config import settings
@@ -11,9 +13,10 @@ from core.models.db_helper import db_helper
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # startup
+    logger = logging.getLogger("uvicorn")
+    logger.info("Documentation: http://127.0.0.1:8000/docs")
     yield
     # shutdown
-    print("Session dispose")
     await db_helper.dispose()
 
 
