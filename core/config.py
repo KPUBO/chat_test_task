@@ -1,8 +1,5 @@
-import os
-from typing import ClassVar
-
 from dotenv import load_dotenv
-from pydantic import BaseModel, AnyUrl
+from pydantic import BaseModel
 from pydantic import PostgresDsn
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -11,6 +8,12 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class RunConfig(BaseModel):
     host: str = '127.0.0.1'
     port: int = 8000
+
+
+class TestDatabaseConfig(BaseModel):
+    url: PostgresDsn
+    echo: bool
+
 
 class ApiV1Prefix(BaseModel):
     prefix: str = "/api_v1"
@@ -24,6 +27,7 @@ class ApiPrefix(BaseModel):
 
 class DatabaseConfig(BaseModel):
     url: PostgresDsn
+    echo: bool
     max_overflow: int = 10
     pool_size: int = 50
 
@@ -38,7 +42,7 @@ class DatabaseConfig(BaseModel):
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=("fastapi-application/.env.template", "fastapi-application/.env"),
+        env_file=(".env.template", ".env"),
         case_sensitive=False,
         env_nested_delimiter="__",
         env_prefix="APP_CONFIG__",
@@ -47,6 +51,7 @@ class Settings(BaseSettings):
     api: ApiPrefix = ApiPrefix()
     load_dotenv()
     db: DatabaseConfig
+    test_db: TestDatabaseConfig
 
 
 settings = Settings()
