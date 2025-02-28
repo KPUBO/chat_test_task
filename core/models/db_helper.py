@@ -14,7 +14,7 @@ class DatabaseHelper:
     def __init__(
             self,
             url: str,
-            echo: bool = True,
+            echo: bool,
             echo_pool: bool = False,
             pool_size: int = 5,
             max_overflow: int = 10,
@@ -45,4 +45,5 @@ db_helper = DatabaseHelper(
     url=str(settings.db.url),
     pool_size=settings.db.pool_size,
     max_overflow=settings.db.max_overflow,
+    echo=settings.db.echo
 )
