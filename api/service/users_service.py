@@ -1,31 +1,33 @@
-from typing import List, Sequence
+from typing import Sequence, Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.repository.users_repository import UserRepository
+from api.service.base_service import BaseService
 from core.models import User
 from core.schemas.user import UserCreate
 
 
-class UserService:
+class UserService(BaseService):
+
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
-        self.repository = UserRepository(session)
+        self.repository = UserRepository(User, session)
 
-    async def get_all_users(self) -> Sequence[User]:
-        return await self.repository.get_all_users()
+    async def get_all(self) -> Sequence[User]:
+        return await self.repository.get_all()
 
-    async def get_user_by_id(self, user_id: int) -> User:
-        return await self.repository.get_user_by_id(user_id)
+    async def get_by_id(self, user_id: int) -> User:
+        return await self.repository.get_by_id(user_id)
 
-    async def create_user(self, user: UserCreate) -> User:
-        user = await self.repository.create_user(user)
+    async def insert_item(self, user: UserCreate) -> User:
+        user = await self.repository.insert_item(user)
         return user
 
-    async def update_user(self, user_id: int, user: UserCreate):
-        user = await self.repository.update_user(user_id, user)
+    async def update_item(self, user_id: int, user: UserCreate) -> Optional[User]:
+        user = await self.repository.update_item(user_id, user)
         return user
 
-    async def delete_user(self, user_id: int):
-        user = await self.repository.delete_user(user_id)
+    async def delete_item(self, user_id: int):
+        user = await self.repository.delete_by_id(user_id)
         return user
