@@ -18,7 +18,7 @@ async def read_users(
         session: AsyncSession = Depends(db_helper.session_getter)
 ):
     service = UserService(session)
-    users = await service.get_all_users()
+    users = await service.get_all()
     return users
 
 
@@ -28,7 +28,7 @@ async def read_user_by_id(
         session: AsyncSession = Depends(db_helper.session_getter)
 ):
     service = UserService(session)
-    user = await service.get_user_by_id(user_id)
+    user = await service.get_by_id(user_id)
     return user
 
 
@@ -39,7 +39,7 @@ async def add_user(
 
 ):
     service = UserService(session)
-    user = service.create_user(user=user)
+    user = service.insert_item(user=user)
     return await user
 
 
@@ -50,7 +50,7 @@ async def update_user(
         session: AsyncSession = Depends(db_helper.session_getter),
 ):
     service = UserService(session)
-    user = service.update_user(user_id=user_id, user=user)
+    user = service.update_item(user_id=user_id, user=user)
     return await user
 
 
@@ -60,5 +60,5 @@ async def delete_user(
         session: AsyncSession = Depends(db_helper.session_getter),
 ):
     service = UserService(session)
-    user = await service.delete_user(user_id=user_id)
+    user = await service.delete_item(user_id=user_id)
     return user
