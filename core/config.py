@@ -18,11 +18,17 @@ class TestDatabaseConfig(BaseModel):
 class ApiV1Prefix(BaseModel):
     prefix: str = "/api_v1"
     users: str = '/users'
+    auth: str = "/auth"
 
 
 class ApiPrefix(BaseModel):
     prefix: str = "/api"
     v1: ApiV1Prefix = ApiV1Prefix()
+
+class AccessTokenConfig(BaseModel):
+    lifetime_seconds: int = 3600
+    reset_password_token_secret: str
+    verification_token_secret: str
 
 
 class DatabaseConfig(BaseModel):
@@ -51,6 +57,7 @@ class Settings(BaseSettings):
     api: ApiPrefix = ApiPrefix()
     load_dotenv()
     db: DatabaseConfig
+    access_token: AccessTokenConfig
     test_db: TestDatabaseConfig
 
 
