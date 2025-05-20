@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Generic, TypeVar, Sequence, Optional
 
-from api.repository.base_repository import BaseRepository
+from api.repositories.base_repository import BaseRepository
 
 T = TypeVar('T')
 
