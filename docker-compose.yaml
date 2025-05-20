@@ -1,0 +1,90 @@
+services:
+  main_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: /bin/bash -c "sleep 5 && python -m alembic upgrade head && python -m uvicorn main:main_app --reload --host 0.0.0.0 --port 8000"
+    ports:
+      - 8001:8000
+    env_file:
+      - .env.docker
+    stdin_open: true
+    tty: true
+    depends_on:
+      - db
+      - adminer
+      - redis
+    networks:
+      - app_network
+
+  db:
+    image: postgres:latest
+    ports:
+      - 6432:5432
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: chat_test_task
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+
+  test_db:
+    image: postgres:latest
+    ports:
+      - 6433:5432
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: chat_test_task_tests
+    volumes:
+      - db_data_test:/var/lib/postgresql/data'
+    networks:
+      - app_network
+
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: /bin/bash -c "sleep 5 && pytest ./test"
+    env_file:
+      - .env.docker
+    stdin_open: true
+    tty: true
+    depends_on:
+      - test_db
+      - adminer
+    networks:
+      - app_network
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+
+  redis:
+    image: redis:latest
+    container_name: redis_container
+    restart: always
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_data:/data
+    command: ["redis-server", "--appendonly", "yes"]
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
+
+
+volumes:
+  db_data:
+  db_data_test:
+  redis_data:
