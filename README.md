@@ -43,6 +43,9 @@
    python -c "import secrets; print(secrets.token_hex())"
    ```
    Результат выполнения этого скрипта можно вставить в TOKEN_SECRET
+
+   При развертывании приложения через docker-compose необходимо создать файл .env.docker
+   с содержимым подобному в файле .env.docker.template
 3. **Запуск контейнеров (Docker)**
     ```bash
    docker compose up -d  
