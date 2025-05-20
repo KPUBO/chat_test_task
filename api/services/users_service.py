@@ -1,18 +1,23 @@
 from typing import Sequence, Optional
 
+from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api.repository.users_repository import UserRepository
-from api.service.base_service import BaseService
-from core.models import User
+from api.repositories.users_repository import UserRepository
+from api.services.base_service import BaseService
+from core.models import User, db_helper
 from core.schemas.user import UserCreate
 
 
 class UserService(BaseService):
 
-    def __init__(self, session: AsyncSession) -> None:
+    def __init__(
+            self,
+            session: AsyncSession = Depends(db_helper.session_getter),
+            repo: UserRepository = Depends()
+    ):
         self.session = session
-        self.repository = UserRepository(User, session)
+        self.repository = repo
 
     async def get_all(self) -> Sequence[User]:
         return await self.repository.get_all()

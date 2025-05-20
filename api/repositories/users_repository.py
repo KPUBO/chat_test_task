@@ -1,20 +1,22 @@
-from typing import Sequence, List, Optional
+from datetime import datetime
+from typing import Sequence, Optional
 
-from fastapi import HTTPException
+from fastapi import HTTPException, Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.sql.operators import add
 
-from api.repository.base_repository import BaseRepository, T
+from api.repositories.base_repository import BaseRepository, T
+from core.models import db_helper
 from core.models.user_models.user import User
 from core.schemas.user import UserCreate
 
 
-class UserRepository(BaseRepository[User]):
+class UserRepository:
 
-    def __init__(self, model: type[User], session: AsyncSession):
-        self.model = model
+    def __init__(self,
+                 session: AsyncSession = Depends(db_helper.session_getter)):
         self.session = session
+        self.model = User
 
     async def get_all(self) -> Sequence[T]:
         result = await self.session.execute(select(self.model))
@@ -42,6 +44,7 @@ class UserRepository(BaseRepository[User]):
             update_data_dict = user.model_dump()
             for k, v in update_data_dict.items():
                 setattr(user_to_update, k, v)
+            user_to_update.updated_at = datetime.utcnow()
             await self.session.commit()
             return user_to_update
         else:
