@@ -34,11 +34,16 @@
 
    DATABASE_URL=postgresql+asyncpg://user:password@localhost/blog_db  
    REDIS_URL=redis://localhost:6379  
-   SECRET_KEY=your-secret-key
-   - Генерация токена 
+   APP_CONFIG__ACCESS_TOKEN__RESET_PASSWORD_TOKEN_SECRET=
+
+   APP_CONFIG__ACCESS_TOKEN__VERIFICATION_TOKEN_SECRET=
+   
+   
+   *Генерация токена*
    ```shell
    python -c "import secrets; print(secrets.token_hex())"
    ```
+   Результат выполнения этого скрипта можно вставить в TOKEN_SECRET
 3. **Запуск контейнеров (Docker)**
     ```bash
    docker compose up -d  
