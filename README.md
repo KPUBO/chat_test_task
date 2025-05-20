@@ -35,7 +35,6 @@
    DATABASE_URL=postgresql+asyncpg://user:password@localhost/blog_db  
    REDIS_URL=redis://localhost:6379  
    APP_CONFIG__ACCESS_TOKEN__RESET_PASSWORD_TOKEN_SECRET=
-
    APP_CONFIG__ACCESS_TOKEN__VERIFICATION_TOKEN_SECRET=
    
    
